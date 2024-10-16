@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>بروزرسانی محصول</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet">
+    <link rel="icon" href="/logo.ico" type="image/x-icon" />
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            direction: rtl;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        .message {
+            color: green; /* Adjust color for success */
+            margin: 10px 0;
+        }
+        .error-message {
+            color: red; /* Adjust color for errors */
+            margin: 10px 0;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>بروزرسانی محصول</h1>
+
+    <!-- Success/Error Message Section -->
+    <div class="message" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/update/{id}(id=${product.id})}" method="post">
+        <input type="hidden" name="id" th:value="${product.id}"/>
+
+        <label for="name">نام محصول</label>
+        <input type="text" id="name" th:value="${product.name}" disabled />
+
+        <label for="description">توضیحات محصول</label>
+        <input type="text" id="description" th:value="${product.description}" disabled />
+
+        <label for="price">قیمت جدید</label>
+        <input type="number" step="1000" id="price" name="price" placeholder="قیمت جدید" required />
+
+        <button type="submit">بروزرسانی قیمت</button>
+    </form>
+</div>
+</body>
+</html>
