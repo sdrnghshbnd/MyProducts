@@ -167,18 +167,53 @@
             document.querySelector('input[name="name"]').value = ''; // Clear the search input
             document.querySelector('form[action="/search"]').submit(); // Submit the form to refresh the product list
         }
+        function validateForm() {
+            const price = parseFloat(document.getElementById('price').value);
+            const salePrice = parseFloat(document.getElementById('salePrice').value);
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+
+            // Clear previous error messages
+            errorMessage.style.display = 'none';
+            errorText.textContent = '';
+
+            // Validate price
+            if (price < 0) {
+                errorText.textContent = 'قیمت نمی‌تواند منفی باشد.'; // "Price cannot be negative."
+                errorMessage.style.display = 'block';
+                return false; // Prevent form submission
+            }
+
+            // Validate sale price
+            if (salePrice && salePrice < 0) {
+                errorText.textContent = 'قیمت تخفیف نمی‌تواند منفی باشد.'; // "Sale price cannot be negative."
+                errorMessage.style.display = 'block';
+                return false; // Prevent form submission
+            }
+
+            if (salePrice && salePrice > price) {
+                errorText.textContent = 'قیمت تخفیف نمی‌تواند بیشتر از قیمت اصلی باشد.'; // "Sale price cannot be greater than the original price."
+                errorMessage.style.display = 'block';
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
     </script>
 </head>
 <body>
 <div class="container">
     <h1>مدیریت محصولات</h1>
-
+    <div id="error-message" style="color: red; margin-bottom: 20px; display: none;">
+        <p id="error-text"></p>
+    </div>
     <!-- Add Product Section -->
     <h2>اضافه کردن محصول جدید</h2>
-    <form action="/add" method="post">
+    <form action="/add" method="post" onsubmit="return validateForm()" id="addProductForm">
         <input type="text" id="name" name="name" placeholder="نام محصول" required>
-        <input type="number" id="price" name="price" placeholder="قیمت محصول" required step="0.01">
-        <input type="text" id="description" name="description" placeholder="توضیحات محصول" required>
+        <input type="number" id="price" name="price" placeholder="قیمت محصول" required step="1000">
+        <input type="number" id="salePrice" name="salePrice" placeholder=" قیمت محصول با تخفیف" step="1000">
+        <input type="text" id="description" name="description" placeholder="توضیحات محصول">
         <button type="submit">اضافه کردن محصول</button>
     </form>
 
@@ -199,6 +234,7 @@
         <tr>
             <th style="text-align: center;">نام محصول</th> <!-- Product Name Header -->
             <th style="text-align: center;">قیمت</th> <!-- Price Header -->
+            <th style="text-align: center;">قیمت با تخفیف</th> <!-- salePrice Header -->
             <th style="text-align: center;">عملیات</th> <!-- Actions Header -->
         </tr>
         </thead>
@@ -207,6 +243,9 @@
             <td class="product-name" th:text="${product.name}"></td> <!-- Product Name -->
             <td class="product-price">
                 <span class="number" th:text="${product.price}"></span> <!-- Price with class 'number' -->
+            </td>
+            <td class="product-price">
+                <span class="number" th:text="${product.salePrice}"></span> <!-- Price with class 'number' -->
             </td>
             <td>
                 <form action="/delete" method="post" style="display: inline;" onsubmit="event.stopPropagation();">

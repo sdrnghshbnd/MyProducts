@@ -31,8 +31,8 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@RequestParam String name, @RequestParam BigDecimal price, @RequestParam String description) {
-        Product product = new Product(name, price, description);
+    public String addProduct(@RequestParam String name, @RequestParam() BigDecimal price, @RequestParam(required = false) BigDecimal salePrice, @RequestParam(required = false) String description) {
+        Product product = new Product(name, price, salePrice, description);
         productService.saveProduct(product);
         return "redirect:/";
     }
@@ -54,9 +54,15 @@ public class ProductController {
         return "update"; // Return the view name for the update form
     }
 
-    @PostMapping("/update/{id}")
-    public String updateProduct(@PathVariable Integer id, @RequestParam BigDecimal price) {
+    @PostMapping("/priceUpdate/{id}")
+    public String updateProductPrice(@PathVariable Integer id, @RequestParam BigDecimal price) {
         productService.updateProductPrice(id, price); // Update the product price
+        return "redirect:/"; // Redirect to the home page
+    }
+
+    @PostMapping("/salePriceUpdate/{id}")
+    public String updateProductSalePrice(@PathVariable Integer id, @RequestParam BigDecimal salePrice) {
+        productService.updateProductSalePrice(id, salePrice); // Update the product price
         return "redirect:/"; // Redirect to the home page
     }
 
